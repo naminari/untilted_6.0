@@ -19,7 +19,7 @@ public class Main {
 //        String host = bundle.getString("hostName");
 //        int port = Integer.parseInt(bundle.getString("port"));
         String host = "localhost";
-        int port = 1112;
+        int port = 8111;
         Client client = new Client(humanDirector, host, port);
         Introduce introduce = new Introduce(client);
         introduce.run();

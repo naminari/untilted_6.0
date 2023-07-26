@@ -38,6 +38,7 @@ public class Client {
             Transit<Serializable> object = packCommandToTransit(type, args);  /// упаковывает команду для отправки
             history.add(object.getType().getName());                          /// добавляет в историю выполнение команды
             ByteBuffer buffer = serializeTransit(object);                     /// упаковывает транхит в буфер для передачи их
+
             sendMessage(buffer);                                              /// отправляет буфер
             return receiveMessage();                                          /// возвращает сообщение
         } catch (IOException e) {
@@ -73,6 +74,7 @@ public class Client {
     }
 
     private void sendMessage(ByteBuffer byteBuffer) throws IOException {
+        System.out.println("хуй");
         this.channel.write(byteBuffer);
     }
 

@@ -24,7 +24,7 @@ public class Main {
 //        int port = Integer.parseInt(bundle.getString("port"));
 //        String host = bundle.getString("hostName");
         String host = "localhost";
-        int port = 1112;
+        int port = 8111;
         File file = new File("src/main/resources/redound.xml");
         XMLFileWriter<HumanBeing> writer = new XMLFileWriter<>();
         LinkedHashSet<HumanBeing> collection = new LinkedHashSet<>();
