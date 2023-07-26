@@ -1,7 +1,8 @@
 package humans;
 
+import java.io.Serializable;
 import java.util.Objects;
-public class Car {
+public class Car implements Serializable {
     private String name;
 
     public Car(String name) {

@@ -1,4 +1,4 @@
-package cmd;
+package collection;
 
 import humans.Mood;
 import humans.WeaponType;

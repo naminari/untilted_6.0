@@ -2,10 +2,11 @@ package humans;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-public class Coordinates {
+public class Coordinates implements Serializable {
     private Long x;
     private float y;
 

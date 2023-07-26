@@ -1,13 +1,14 @@
 package humans;
 
-import cmd.MainCollectible;
+import collection.MainCollectible;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public class HumanBeing implements MainCollectible, Comparable<HumanBeing> {
+public class HumanBeing implements MainCollectible, Comparable<HumanBeing>, Serializable {
     private UUID id;
     private String name;
     private Coordinates coordinates;

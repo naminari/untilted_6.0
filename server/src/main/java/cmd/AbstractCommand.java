@@ -4,6 +4,7 @@ import exceptions.ExecuteException;
 import exceptions.ValidException;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractCommand implements Command{
@@ -15,7 +16,7 @@ public abstract class AbstractCommand implements Command{
         this.description = d;
         this.cmdType = t;
     }
-    public abstract ActionResult action(CmdArgs args) throws FileNotFoundException, ValidException, InvocationTargetException, IllegalAccessException, ExecuteException;
+    public abstract <K extends Serializable> String action(K[] args) throws FileNotFoundException, ValidException, InvocationTargetException, IllegalAccessException, ExecuteException;
     public String getName(){
         return name;
     }

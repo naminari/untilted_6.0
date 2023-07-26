@@ -1,7 +1,6 @@
 package collection;
 
 import builders.HumanDirector;
-import cmd.MainCollectible;
 import exceptions.ValidException;
 import humans.HumanBeing;
 import humans.Mood;
@@ -13,6 +12,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class HumanSet {
     private final Set<HumanBeing> collection;
@@ -21,6 +23,9 @@ public class HumanSet {
     private final Validator<HumanBeing> validator;
     private final XMLFileWriter<HumanBeing> writer;
     private final File file;
+    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = readWriteLock.readLock();
+    private final Lock writeLock = readWriteLock.writeLock();
 
     public HumanSet(Collection<HumanBeing> collection, HumanDirector humanDirector, File file, Validator<HumanBeing> validator, XMLFileWriter<HumanBeing> writer) {
         this.humanDirector = humanDirector;
@@ -41,26 +46,27 @@ public class HumanSet {
         try {
             String message;
             if (validator.checkElement(element) && !checkElementById(element.getId())) {
+                writeLock.lock();
                 collection.add(element);
+                writeLock.unlock();
                 message = String.format("HumanBeing with id: %s was added to collection", element.getId().toString());
             } else {
                 message = String.format("element: %s is already exists", element.getId().toString());
             }
             return message;
         } catch (ValidException e) {
-            System.out.println(e.getMessage());
             return e.getMessage();
         }
     }
 
-    public void addIfMin(HumanBeing humanBeing) {
+    public String addIfMin(HumanBeing humanBeing) {
         if (collection.size() == 0) {
-            add(humanBeing);
+            return add(humanBeing);
         }
         if (getMinElement().get().compareTo(humanBeing) > 0) {
-            add(humanBeing);
+            return add(humanBeing);
         } else {
-            System.out.print("Human more than min of collection or equals it");
+            return "Human more than min of collection or equals it";
         }
     }
 
@@ -87,13 +93,13 @@ public class HumanSet {
         return humanDirector;
     }
 
-    public void removeById(String uuid) {
-        for (HumanBeing humanBeing : collection) {
-            if (Objects.equals(humanBeing.getId(), UUID.fromString(uuid))) {
-                collection.remove(humanBeing);
-                System.out.println("element #" + uuid + "successfully updated");
-            }
-        }
+    public boolean removeById(UUID id) {
+        writeLock.lock();
+        readLock.lock();
+        boolean isRemoved = collection.removeIf(product -> product.getId().equals(id));
+        writeLock.unlock();
+        readLock.unlock();
+        return isRemoved;
     }
 
     public String toString() {
@@ -152,4 +158,41 @@ public class HumanSet {
             }
         }
     }
+    // info, show, removeById,
+//    public static int getFreeUrinals(String urinals) {
+//        int result = 0;
+//
+//        urinals = urinals.replaceAll("10", "").replaceAll("^0+", "").replaceAll("0+$", "").replaceAll("01");
+//
+//        String[] fragments = urinals.split("1");
+//        for (String fragment : fragments) {
+//            result += (fragment.length() + 1) / 2;
+//        }
+//
+//        return result;
+//    }
 }
+//package org.example;
+//import org.testng.annotations.Test;
+//
+//import static org.testng.Assert.assertEquals;
+//
+//    public class Main {
+//        public static void main(String[] args) {
+//            System.out.println("Hello world!");
+//            System.out.println("Fixed Tests: noBoringZeros");
+//            testing(noBoringZeros(1450), 145);
+//            testing(noBoringZeros(960000), 96);
+//            testing(noBoringZeros(1050), 105);
+//            testing(noBoringZeros(-1050), -105);
+//
+//        }
+//        public static int noBoringZeros(int n) {
+//            while (n % 10 == 0){
+//                n = n/10;
+//            } return n;
+//        }
+//        private static void testing(int actual, int expected) {
+//            assertEquals(expected, actual);
+//        }
+//    }
